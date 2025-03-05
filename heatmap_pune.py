@@ -27,10 +27,13 @@ json_file_path = "JSON.json"
 with open(json_file_path, "w") as json_file:
     json.dump(data.to_dict(orient="records"), json_file, indent=4)
 
-features = data[["Latitude", "Longitude", "Population_Density", "Orders", "Profit", "Revenue"]]
-kmeans = KMeans(n_clusters=5, random_state=42, n_init=10)
-data["Cluster"] = kmeans.fit_predict(features)
-warehouse_locations = pd.DataFrame(kmeans.cluster_centers_, columns=features.columns)[["Latitude", "Longitude"]]
+# Generate more random data for JSON_2.json
+warehouse_latitudes = np.random.uniform(18.45, 18.65, 5)
+warehouse_longitudes = np.random.uniform(73.75, 74.05, 5)
+warehouse_locations = pd.DataFrame({
+    "Latitude": warehouse_latitudes,
+    "Longitude": warehouse_longitudes
+})
 
 warehouse_json_file_path = "JSON_2.json"
 with open(warehouse_json_file_path, "w") as json_file:
