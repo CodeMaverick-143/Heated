@@ -55,7 +55,12 @@ legend_html = '''
     <b>Heatmap Intensity</b><br>
     <i style="background: red; width: 10px; height: 10px; display: inline-block;"></i> High<br>
     <i style="background: yellow; width: 10px; height: 10px; display: inline-block;"></i> Medium<br>
-    <i style="background: green; width: 10px; height: 10px; display: inline-block;"></i> Low
+    <i style="background: green; width: 10px; height: 10px; display: inline-block;"></i> Low<br>
+    <b>Ranges:</b><br>
+    Population Density: 500-5000<br>
+    Orders: 50-1000<br>
+    Profit: 2500-200000<br>
+    Revenue: 3000-300000
 </div>
 '''
 pune_map.get_root().html.add_child(folium.Element(legend_html))
