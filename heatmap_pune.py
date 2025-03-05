@@ -76,5 +76,5 @@ for _, row in warehouse_locations.iterrows():
         icon=folium.Icon(color="red", icon="home")
     ).add_to(pune_map)
 
-heatmap_file_path = "pune_heatmap.html"
+heatmap_file_path = "index.html"
 pune_map.save(heatmap_file_path)
