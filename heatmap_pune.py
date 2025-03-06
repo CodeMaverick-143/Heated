@@ -3,6 +3,7 @@ import pandas as pd
 import folium
 from folium.plugins import HeatMap
 from sklearn.cluster import KMeans
+from geopy.distance import geodesic
 
 # Set random seed for reproducibility
 np.random.seed(42)
@@ -42,10 +43,27 @@ data["Weighted_Score"] = (
     (data["Weighted_Score"].max() - data["Weighted_Score"].min())
 )
 
+# List of existing warehouse locations (example coordinates)
+existing_warehouses = [(18.5204, 73.8567), (18.5310, 73.8745)]  # Add your existing warehouse locations here
+
+# Function to check if a new location is too close to existing warehouses
+def is_too_close(new_location, existing_locations, min_distance_km=5):
+    for existing_location in existing_locations:
+        if geodesic(new_location, existing_location).km < min_distance_km:
+            return True
+    return False
+
 # Determine optimal warehouse locations using KMeans clustering
 kmeans = KMeans(n_clusters=5, random_state=42, n_init=10)
 kmeans.fit(data[["Latitude", "Longitude", "Weighted_Score"]])
 warehouse_clusters = kmeans.cluster_centers_
+
+# Filter out clusters that are too close to existing warehouses
+filtered_clusters = []
+for cluster in warehouse_clusters:
+    latitude, longitude, _ = cluster
+    if not is_too_close((latitude, longitude), existing_warehouses):
+        filtered_clusters.append(cluster)
 
 # Create a map of Pune
 pune_map = folium.Map(location=[18.5204, 73.8567], zoom_start=12)
@@ -55,7 +73,7 @@ heat_data = data[["Latitude", "Longitude", "Weighted_Score"]].values.tolist()
 HeatMap(heat_data, radius=15, blur=10).add_to(pune_map)
 
 # Add warehouse locations to the map
-for i, cluster in enumerate(warehouse_clusters):
+for i, cluster in enumerate(filtered_clusters):
     latitude, longitude, _ = cluster
     folium.Marker(
         location=[latitude, longitude],
